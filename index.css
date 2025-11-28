@@ -377,7 +377,7 @@
         background: var(--card-bg);
         border: 1px solid var(--border-color);
         border-radius: var(--border-radius);
-        height: 24px;
+       
     }
 
     .loading-overlay {
@@ -523,4 +523,5 @@
 
     [theme="light"] .icon-img {
         --icon-filter: invert(0);
+
     }
