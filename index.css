@@ -1,0 +1,526 @@
+    /* --- STYLE CSS START --- */
+
+    /* Zmienne motywu */
+    :root {
+        --bg: #faf9f7;
+        --panel-bg: #ffffff;
+        --text-color: #1c1b1b;
+        --text-muted: #7c7c7c;
+        --text-dark: #000000;
+        --highlight-color: #ff7300;
+        --highlight-color-darker: #e65c00;
+        --border-color: #d6d4d1;
+        --border-color-hover: #c9c7c1;
+        --card-bg: #f5f5f4;
+        --danger-color: #d92336;
+        --danger-rgb: 217, 35, 54;
+        --success-rgb: 40, 167, 69;
+        --success-color: #28a745;
+        --bg-rgb: 250, 249, 247;
+        --input-bg: var(--bg);
+        --input-hover: var(--highlight-color);
+        --input-border: var(--border-color);
+        --input-focus: var(--highlight-color);
+        --button-hover-filter: invert(0.5) brightness(0.5) contrast(0.5) saturate(0.5) hue-rotate(180deg);
+        --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        --border-radius: 0px;
+        --button-bg: var(--panel-bg);
+        --button-text: var(--text-color);
+        --resizer-color: var(--border-color);
+        --resizer-hover-color: var(--highlight-color);
+        --icon-filter: invert(0) brightness(1) contrast(1) saturate(1) hue-rotate(0deg) drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+
+    }
+
+    :root[theme="dark"] {
+        --bg: #121212;
+        --panel-bg: #000000;
+        --text-color: #ffffff;
+        --text-muted: #8d8d8d;
+        --text-dark: #000000;
+        --highlight-color: #ff7300;
+        --highlight-color-darker: #e65c00;
+        --border-color: #242424;
+        --border-color-hover: #333333;
+        --card-bg: #1a1a1a;
+        --danger-color: #dc3545;
+        --danger-rgb: 220, 53, 69;
+        --success-rgb: 40, 167, 69;
+        --success-color: #28a745;
+        --bg-rgb: 18, 18, 18;
+        --input-bg: var(--bg);
+        --input-hover: var(--highlight-color);
+        --input-border: var(--border-color);
+        --input-focus: var(--highlight-color);
+        --button-hover-filter: invert(1);
+        --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        --default-rgb: 255, 255, 255;
+        --button-bg: #1a1a1a;
+        --icon-filter: invert(1) brightness(0.95) contrast(1.2) saturate(1.2) hue-rotate(0deg) drop-shadow(0 0 2px #fff);
+    }
+
+    * {
+        user-select: none;
+    }
+
+    /* Ogólne style */
+    body,
+    html {
+        height: 100%;
+        margin: 0;
+        font-family: "JetBrains Mono", "Share Tech Mono", monaco, courier, monospace;
+        background-color: var(--bg);
+        color: var(--text-color);
+        overflow: hidden;
+        user-select: none;
+        -webkit-user-select: none;
+        scrollbar-width: none;
+        /* Usunięto animację kolorów dla szybszego wrażenia, zostawiono tylko minimalne */
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Układ */
+    .app-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    header {
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        border-bottom: 1px solid var(--border-color);
+        background-color: var(--panel-bg);
+        gap: 12px;
+        flex-shrink: 0;
+        height: 50px;
+        box-sizing: border-box;
+        transition: background-color 0.2s ease;
+    }
+
+    .header-title {
+        font-weight: bold;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .header-controls-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .header-controls-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+    }
+
+    .content {
+        display: flex;
+        flex-grow: 1;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Panele */
+    .panel {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background-color: var(--panel-bg);
+        height: 100%;
+        /* ZMIANA: Usunięto 'width 0.3s ease' aby resizer i ukrywanie działały natychmiast */
+        transition: background-color 0.2s ease;
+    }
+
+    .editor-panel {
+        width: 50%;
+        min-width: 0;
+    }
+
+    /* Klasa do ukrywania edytora */
+    .editor-panel.hidden {
+        width: 0 !important;
+        min-width: 0 !important;
+        overflow: hidden;
+        border: none;
+    }
+
+    .preview-panel {
+        flex-grow: 1;
+        min-width: 0;
+        background-color: var(--bg);
+        /* ZMIANA: Usunięto 'width 0.3s ease' */
+        transition: background-color 0.2s ease;
+    }
+
+    /* Klasa gdy preview jest na pełną szerokość */
+    .preview-panel.full-width {
+        width: 100%;
+    }
+
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border-color);
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        flex-shrink: 0;
+        white-space: nowrap;
+        height: 36px;
+        box-sizing: border-box;
+        transition: background-color 0.2s ease;
+    }
+
+    #monacoEditorContainer {
+        flex-grow: 1;
+        height: 100%;
+        width: 100%;
+        min-height: 200px;
+    }
+
+    #previewFrame {
+        flex-grow: 1;
+        width: 100%;
+        height: 100%;
+        border: none;
+        background-color: var(--bg);
+    }
+
+    /* Resizer (Suwak) */
+    .resizer {
+        flex-basis: 6px;
+        flex-shrink: 0;
+        cursor: col-resize;
+        background-color: var(--bg);
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+        transition: background-color 0.1s ease;
+        position: relative;
+        z-index: 10;
+    }
+
+    .resizer:hover,
+    .resizer.is-dragging {
+        background-color: var(--highlight-color);
+    }
+
+    .resizer.hidden {
+        display: none;
+    }
+
+    /* --- Elementy Linijki (Ruler) --- */
+    .ruler-indicator {
+        position: fixed;
+        top: 50px;
+        /* Poniżej header */
+        bottom: 0;
+        width: 2px;
+        background-color: var(--highlight-color);
+        pointer-events: none;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 0 2px var(--highlight-color);
+    }
+
+    .ruler-indicator::before {
+        content: attr(data-width);
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        background-color: var(--highlight-color);
+        color: white;
+        padding: 4px 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .ruler-indicator.active {
+        display: block;
+    }
+
+    .bottom-ruler {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 30px;
+        background: var(--panel-bg);
+        border-top: 1px solid var(--border-color);
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .bottom-ruler.active {
+        display: block;
+    }
+
+    .ruler-track {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .ruler-marks {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .ruler-mark {
+        position: absolute;
+        bottom: 0;
+        width: 1px;
+        background: var(--text-muted);
+        opacity: 0.4;
+        height: 10px;
+    }
+
+    .ruler-mark.major {
+        height: 20px;
+        background: var(--text-color);
+        opacity: 0.8;
+        width: 2px;
+    }
+
+    .ruler-label {
+        position: absolute;
+        top: 2px;
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        transform: translateX(-50%);
+    }
+
+    .ruler-indicator-bottom {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--highlight-color);
+        transform: translateX(-50%);
+        z-index: 10;
+    }
+
+    .ruler-indicator-bottom::after {
+        content: attr(data-percentage);
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--highlight-color);
+        color: white;
+        padding: 2px 4px;
+        font-size: 0.7rem;
+        white-space: nowrap;
+    }
+
+    /* Przyciski */
+    button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 32px;
+        padding: 4px 12px;
+        border: 1px solid var(--border-color);
+        background-color: var(--card-bg);
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: var(--border-radius);
+        transition: 0.2s ease;
+        font-family: inherit;
+    }
+
+    button:hover {
+        background: var(--panel-bg);
+        color: var(--text-color);
+        border-color: var(--border-color-hover);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .icon-button {
+        width: 32px;
+        padding: 0;
+    }
+
+    .icon-button:hover {
+        color: #d92336;
+    }
+
+
+
+    #modeDisplay {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        padding: 4px 8px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        height: 24px;
+    }
+
+    .loading-overlay {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        color: var(--text-muted);
+        font-family: monospace;
+        background-color: var(--bg);
+    }
+
+    /* --- MODAL WŁASNY --- */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(2px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal-container {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        animation: slideDown 0.2s ease;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border-color);
+        background-color: var(--panel-bg);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+        color: var(--text-color);
+        font-size: 0.95rem;
+    }
+
+    .modal-content {
+        padding: 20px;
+        color: var(--text-color);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .modal-footer {
+        padding: 12px 16px;
+        border-top: 1px solid var(--border-color);
+        background-color: var(--panel-bg);
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .btn-danger {
+        color: rgb(var(--danger-rgb), 0.7);
+        border-color: var(--border-color-hover);
+    }
+
+    .btn-danger:hover {
+        background-color: rgba(220, 53, 69, 0.1);
+        border-color: var(--border-color-hover);
+        color: var(--danger-color);
+    }
+
+    /* --- TOAST --- */
+    .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: var(--panel-bg);
+        border: 1px solid var(--success-color);
+        color: var(--success-color);
+        padding: 10px 16px;
+        border-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        z-index: 2000;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* --- ICON IMAGE STYLES --- */
+    .icon-img {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.3s ease;
+        filter: var(--icon-filter, invert(0));
+    }
+
+    [theme="dark"] .icon-img {
+        --icon-filter: invert(1);
+    }
+
+    [theme="light"] .icon-img {
+        --icon-filter: invert(0);
+    }
